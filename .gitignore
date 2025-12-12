@@ -1,0 +1,88 @@
+# ----------------------------------------
+# Node
+# ----------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+.pnpm-store/
+
+# Optional: allow lockfiles if you prefer deterministic builds
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ----------------------------------------
+# Build outputs
+# ----------------------------------------
+dist/
+build/
+out/
+.tmp/
+.temp/
+.cache/
+.esbuild/
+vite-cache/
+.next/
+.nuxt/
+.svelte-kit/
+
+# ----------------------------------------
+# Env files
+# ----------------------------------------
+.env
+.env.*
+!.env.example
+
+# ----------------------------------------
+# Logs
+# ----------------------------------------
+logs/
+*.log
+*.log.*
+log/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ----------------------------------------
+# OS files
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------
+# Editor-specific
+# ----------------------------------------
+.vscode/
+.idea/
+*.swp
+
+# ----------------------------------------
+# Docker
+# ----------------------------------------
+# Ignore machine-local Docker artifacts
+docker-data/
+docker-compose.override.yml
+
+# ----------------------------------------
+# TypeScript
+# ----------------------------------------
+*.tsbuildinfo
+
+# ----------------------------------------
+# Testing
+# ----------------------------------------
+coverage/
+nyc_output/
+
+# ----------------------------------------
+# Misc
+# ----------------------------------------
+*.local
+*.tmp
+*.bak
+*.orig

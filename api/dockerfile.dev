@@ -1,0 +1,8 @@
+FROM node:lts-alpine
+
+WORKDIR /app/api
+COPY package.json .
+RUN npm i
+COPY . .
+
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,20 @@
+Deletable
+- Discover unused code
+- Based on production usage
+
+Things to observe
+- Http endpoint/method requests
+- Field usage and type
+- (Request shape?)
+- Query parameter fields
+
+- Functions or methods
+- Environment variables
+- Feature flags
+- Tables
+- Fields in tables
+
+Know whats safe to remove in your codebase.
+
+It takes knowledge to know what should be built.
+It takes widsom to know what should be removed.
