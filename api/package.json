@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {
     "@fastify/compress": "^8.3.0",

@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { JwtUserData } from './authenticate.ts';
+import { JwtUserData } from './authenticate';
 
 declare module 'fastify' {
   interface FastifyRequest {

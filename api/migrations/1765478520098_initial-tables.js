@@ -101,6 +101,14 @@ export const up = (pgm) => {
       PRIMARY KEY (endpoint_id, client_signature_id)
     );
 
+    CREATE TABLE IF NOT EXISTS ingest_batches (
+      id BIGSERIAL PRIMARY KEY,
+      service_id BIGINT NOT NULL REFERENCES services(id),
+      batch_id UUID NOT NULL,
+      received_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      CONSTRAINT uq_ingest_batches UNIQUE (service_id, batch_id)
+    );
+
     CREATE INDEX idx_services_account_id ON services (account_id);
 
     CREATE INDEX idx_endpoints_account_id ON endpoints (account_id);

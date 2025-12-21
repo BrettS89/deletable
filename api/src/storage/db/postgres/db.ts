@@ -4,7 +4,12 @@ class Postgres {
   private _pool: pg.Pool | null = null;
 
   public connect(options: pg.PoolConfig) {
-    this._pool = new pg.Pool(options);
+    this._pool = new pg.Pool({
+      ...options,
+      max: 10,
+      connectionTimeoutMillis: 500,
+      idleTimeoutMillis: 30_000,
+    });
     return this._pool.query('SELECT 1 + 1');
   }
 

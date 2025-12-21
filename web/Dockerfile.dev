@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-WORKDIR /app/tv-web-app
+WORKDIR /app/web
 COPY package.json .
 RUN npm install
 COPY . .

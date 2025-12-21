@@ -1,7 +1,6 @@
 import Fastify from 'fastify';
 import helmet from '@fastify/helmet';
 import compress from '@fastify/compress';
-import rateLimit from '@fastify/rate-limit';
 import ajvFormats from 'ajv-formats';
 import ajvKeywords from 'ajv-keywords';
 import qs from 'qs';
@@ -9,6 +8,7 @@ import qs from 'qs';
 import { postgres } from './storage/db/postgres/db';
 import { errorHandler } from './middleware/error-handler';
 import { addFormatServiceParamsHook } from './middleware/format-params';
+import inFlightLimiter from './middleware/in-flight-limiter';
 
 export const initApp = async () => {
   const fastify = Fastify({
@@ -58,14 +58,11 @@ export const initApp = async () => {
     encodings: ["br", "gzip"],
   });
 
-  await fastify.register(rateLimit, {
-    max: 100,
-    timeWindow: '1 minute',
-    addHeaders: {
-      'x-ratelimit-limit': true,
-      'x-ratelimit-remaining': true,
-      'x-ratelimit-reset': true
-    }
+  fastify.register(async (inFlightLimiterScope) => {
+    inFlightLimiterScope.register(inFlightLimiter, { maxInFlight: 20, retryAfterSeconds: 5 });
+
+    // register your ingestion routes here
+    // ingestScope.register(ingestionRoutes);
   });
 
   await fastify.register(import('@fastify/swagger'))
