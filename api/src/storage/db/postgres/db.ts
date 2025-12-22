@@ -1,6 +1,6 @@
 import pg from 'pg';
 
-class Postgres {
+export class Postgres {
   private _pool: pg.Pool | null = null;
 
   public connect(options: pg.PoolConfig) {

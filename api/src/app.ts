@@ -10,6 +10,8 @@ import { errorHandler } from './middleware/error-handler';
 import { addFormatServiceParamsHook } from './middleware/format-params';
 import inFlightLimiter from './middleware/in-flight-limiter';
 
+import { registerIngestRoutes } from './modules/ingest';
+
 export const initApp = async () => {
   const fastify = Fastify({
     logger: {
@@ -63,6 +65,7 @@ export const initApp = async () => {
 
     // register your ingestion routes here
     // ingestScope.register(ingestionRoutes);
+    registerIngestRoutes(inFlightLimiterScope, postgres);
   });
 
   await fastify.register(import('@fastify/swagger'))
