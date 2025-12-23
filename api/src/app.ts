@@ -1,3 +1,4 @@
+import { Pool } from 'pg';
 import Fastify from 'fastify';
 import helmet from '@fastify/helmet';
 import compress from '@fastify/compress';
@@ -11,6 +12,12 @@ import { addFormatServiceParamsHook } from './middleware/format-params';
 import inFlightLimiter from './middleware/in-flight-limiter';
 
 import { registerIngestRoutes } from './modules/ingest';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    db: { pool: Pool };
+  }
+}
 
 export const initApp = async () => {
   const fastify = Fastify({
@@ -65,8 +72,10 @@ export const initApp = async () => {
 
     // register your ingestion routes here
     // ingestScope.register(ingestionRoutes);
-    registerIngestRoutes(inFlightLimiterScope, postgres);
+    fastify.register(registerIngestRoutes);
   });
+
+  fastify.decorate('db', { pool: postgres.pool });
 
   await fastify.register(import('@fastify/swagger'))
 

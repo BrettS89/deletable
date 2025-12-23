@@ -1,24 +1,20 @@
-import { Pool } from 'pg';
-import { IDb, ITable } from '../types';
+import { Pool, PoolClient } from 'pg';
 import { BaseQueryObject } from '../../../utils/query/schema';
-import { postgres } from './db';
 import { generateSqlAndParams } from '../../../utils/query';
 
-class PostgresTable implements ITable {
+export class PostgresCrud {
   readonly name: string;
+  private db: Pool | PoolClient;
 
-  constructor(tableName: string) {
-    this.name = tableName
-  }
-
-  pool(): Pool {
-    return postgres.pool;
+  constructor(db: Pool | PoolClient, table: string) {
+    this.name = table;
+    this.db = db;
   }
 
   async getById<T>(id: number | string): Promise<T | null> {
     const sql = `SELECT * FROM ${this.name} WHERE id = $1`;
 
-    const res = await postgres.pool.query(sql, [id]);
+    const res = await this.db.query(sql, [id]);
 
     return res.rows[0] as T ?? null;
   }
@@ -29,7 +25,7 @@ class PostgresTable implements ITable {
       filter: query ?? {},
     })
 
-    const res = await postgres.pool.query(sql, values);
+    const res = await this.db.query(sql, values);
 
     return res.rows as T[];
   }
@@ -47,7 +43,7 @@ class PostgresTable implements ITable {
 
     const sql = `INSERT INTO ${this.name} (${keys.join(', ')}) VALUES(${nums.join(', ')}) RETURNING *`;
 
-    const res = await postgres.pool.query(sql, values);
+    const res = await this.db.query(sql, values);
 
     return res.rows[0] as T;
   }
@@ -65,7 +61,7 @@ class PostgresTable implements ITable {
 
     const sql = `UPDATE ${this.name} SET ${keys.join(', ')} WHERE id = $${keys.length + 1} RETURNING *`;
 
-    const res = await postgres.pool.query(sql, values);
+    const res = await this.db.query(sql, values);
 
     return res.rows[0] as T ?? null;
   }
@@ -73,15 +69,8 @@ class PostgresTable implements ITable {
   async remove<T>(id: number | string): Promise<T | null> {
     const sql = `DELETE FROM ${this.name} WHERE id = $1 RETURNING *`;
 
-    const res = await postgres.pool.query(sql, [id]);
+    const res = await this.db.query(sql, [id]);
 
     return res.rows[0] as T ?? null;
   }
-}
-
-export class PostgresProvider implements IDb {
-  table(name: string) {
-    return new PostgresTable(name)
-  }
-
 }

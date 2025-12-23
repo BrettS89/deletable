@@ -1,14 +1,14 @@
-import { Postgres } from '../../storage/db/postgres/db';
+import { Pool } from 'pg';
 import { IngestRepository } from './ingest.repository';
 import { IngestBatchDto } from './types/ingest.dto';
 import { FieldUsageWithEndpointIdAndContext, EndpointMethodAndPath } from './types/ingest.domain'; 
 import { EndpointUsage } from './types/ingest.dto';
 
 export class IngestService {
-  constructor(private postgres: Postgres) {}
+  constructor(private db: Pool) {}
 
   async ingestBatch(ingestBatchDto: IngestBatchDto) {
-    const client = await this.postgres.pool.connect();
+    const client = await this.db.connect();
     
     try {
       await client.query('BEGIN');
