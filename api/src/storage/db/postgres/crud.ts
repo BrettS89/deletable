@@ -23,7 +23,7 @@ export class PostgresCrud {
     const { sql, values } = generateSqlAndParams({
       sqlString: `SELECT * FROM ${this.name}`,
       filter: query ?? {},
-    })
+    });
 
     const res = await this.db.query(sql, values);
 
