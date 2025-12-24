@@ -28,6 +28,6 @@ export type EndpointUsage = {
 
 export type IngestBatchDto = {
   batch_id: string;
-  service_id: bigint;
+  application_id: bigint;
   endpoint_usage: EndpointUsage[];
 };

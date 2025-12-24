@@ -1,12 +1,12 @@
 export const insertIngestBatchSql = `
-  INSERT INTO ingest_batches (service_id, batch_id)
+  INSERT INTO ingest_batches (application_id, batch_id)
   VALUES ($1, $2)
-  ON CONFLICT (service_id, batch_id) DO NOTHING
+  ON CONFLICT (application_id, batch_id) DO NOTHING
   RETURNING 1
 `;
 
 export const upsertEndpointUsageSql = `
-  INSERT INTO endpoints (service_id, account_id, method, path, total_hits, first_seen_at, last_seen_at)
+  INSERT INTO endpoints (application_id, account_id, method, path, total_hits, first_seen_at, last_seen_at)
   SELECT
     $1,
     s.account_id,
@@ -17,8 +17,8 @@ export const upsertEndpointUsageSql = `
     now()
   FROM unnest($2::text[], $3::text[], $4::bigint[]) 
     AS x(method, path, total_hits)
-  JOIN services s ON s.id = $1
-  ON CONFLICT (service_id, method, path)
+  JOIN applications a ON a.id = $1
+  ON CONFLICT (application_id, method, path)
   DO UPDATE SET
     total_hits   = endpoints.total_hits + EXCLUDED.total_hits,
     last_seen_at = now()
@@ -28,7 +28,7 @@ export const upsertEndpointUsageSql = `
 export const upsertFieldUsage = `
   INSERT INTO field_usage (
     account_id,
-    service_id,
+    application_id,
     endpoint_id,
     context,
     field_path,
@@ -60,7 +60,7 @@ export const upsertFieldUsage = `
     type_counts,
     total_observations
   )
-  JOIN services s ON s.id = $1
+  JOIN applications a ON a.id = $1
   ON CONFLICT (endpoint_id, context, field_path)
   DO UPDATE SET
     total_observations = field_usage.total_observations + EXCLUDED.total_observations,

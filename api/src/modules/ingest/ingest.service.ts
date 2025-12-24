@@ -16,7 +16,7 @@ export class IngestService {
       const ingestRepo = new IngestRepository(client);
     
       const exists = await ingestRepo.insertIngestBatch(
-        ingestBatchDto.service_id,
+        ingestBatchDto.application_id,
         ingestBatchDto.batch_id
       );
 
@@ -26,13 +26,13 @@ export class IngestService {
       }
 
       const endpoints = await ingestRepo.upsertEndpointUsage(
-        ingestBatchDto.service_id,
+        ingestBatchDto.application_id,
         ingestBatchDto.endpoint_usage
       );
 
       const fields = this.formatFieldUsage(endpoints, ingestBatchDto.endpoint_usage);
 
-      await ingestRepo.upsertFieldUsage(ingestBatchDto.service_id, fields);
+      await ingestRepo.upsertFieldUsage(ingestBatchDto.application_id, fields);
 
       await client.query('COMMIT');
 

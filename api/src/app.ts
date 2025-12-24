@@ -12,6 +12,8 @@ import { addFormatServiceParamsHook } from './middleware/format-params';
 import inFlightLimiter from './middleware/in-flight-limiter';
 
 import { registerIngestRoutes } from './modules/ingest';
+import { registerAccountRoutes } from './modules/accounts';
+import { registerRoleRoutes } from './modules/roles';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -73,6 +75,8 @@ export const initApp = async () => {
     // register your ingestion routes here
     // ingestScope.register(ingestionRoutes);
     fastify.register(registerIngestRoutes);
+    fastify.register(registerAccountRoutes);
+    fastify.register(registerRoleRoutes);
   });
 
   fastify.decorate('db', { pool: postgres.pool });

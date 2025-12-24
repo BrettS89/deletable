@@ -5,8 +5,6 @@ import { postgres } from './storage/db/postgres/db';
 import { validateEnvironmentVariables } from './config/environment-variables';
 
 const run = async () => {
-  const fastify = await initApp();
-
   validateEnvironmentVariables();
 
   try {
@@ -17,6 +15,8 @@ const run = async () => {
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASE,
     });
+
+    const fastify = await initApp();
 
     console.log('Connected to postgres')
     
@@ -39,7 +39,7 @@ const run = async () => {
     console.log(`Server running on port ${process.env.PORT}`);
   } catch(e) {
     console.error('Caught error:', e);
-    if (fastify && fastify.log) fastify.log.error(e);
+    // if (fastify && fastify.log) fastify.log.error(e);
     process.exit(1);
   }
 };
