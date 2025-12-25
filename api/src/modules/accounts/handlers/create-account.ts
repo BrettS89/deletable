@@ -3,7 +3,7 @@ import { AccountService } from '../account.service';
 import { CreateAccountDto } from '../types/account.dto';
 import { createAccountSchema, accountResponseSchema } from '../account.validators';
 
-export const createAccountEndpoint: RegisterEndpoint<AccountService> = ({ route, fastify, service }) => {
+export const createAccountEndpoint: RegisterEndpoint<AccountService> = ({ route, fastify }) => {
   fastify.route<{ Body: CreateAccountDto }>({
     method: 'POST',
     url: route,
@@ -15,6 +15,7 @@ export const createAccountEndpoint: RegisterEndpoint<AccountService> = ({ route,
       }
     },
     handler: async (request, reply) => {
+      const service = new AccountService(fastify.db.pool);
       const createdAccount = await service.createAccount(request.body);
       reply.status(201).send(createdAccount);
     }

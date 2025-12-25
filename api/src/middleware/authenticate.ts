@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from '../utils/http-errors';
+import { InternalServerError, UnauthorizedError } from '../utils/http-errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export type JwtUserRole = {
@@ -13,10 +13,12 @@ export type JwtUserData = {
   id: number;
   email: string;
   role: JwtUserRole;
+  account_id: bigint;
 }
 
 declare module 'fastify' {
   interface FastifyRequest {
+    account_id?: bigint;
     user?: JwtUserData;
   }
 }
@@ -36,7 +38,11 @@ export const authenticate = (props?: AuthenticateProps) => {
     }
 
     try {
-      user = jwt.verify(token, process.env.JWT_SECRET!) as JwtUserData
+      user = jwt.verify(token, process.env.JWT_SECRET!) as JwtUserData;
+
+      if (!user) {
+        throw new InternalServerError('No user data found');
+      }
 
       } catch(e) {
       if (e instanceof Error) {
@@ -51,6 +57,7 @@ export const authenticate = (props?: AuthenticateProps) => {
     }
 
     request.user = user!;
+    request.account_id = user!.account_id;
 
     done();
   };

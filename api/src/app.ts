@@ -69,16 +69,6 @@ export const initApp = async () => {
     encodings: ["br", "gzip"],
   });
 
-  fastify.register(async (inFlightLimiterScope) => {
-    inFlightLimiterScope.register(inFlightLimiter, { maxInFlight: 20, retryAfterSeconds: 5 });
-
-    // register your ingestion routes here
-    // ingestScope.register(ingestionRoutes);
-    fastify.register(registerIngestRoutes);
-    fastify.register(registerAccountRoutes);
-    fastify.register(registerRoleRoutes);
-  });
-
   fastify.decorate('db', { pool: postgres.pool });
 
   await fastify.register(import('@fastify/swagger'))
@@ -94,6 +84,16 @@ export const initApp = async () => {
     },
     staticCSP: true,
     transformSpecificationClone: true
+  });
+
+  fastify.register(async (inFlightLimiterScope) => {
+    inFlightLimiterScope.register(inFlightLimiter, { maxInFlight: 20, retryAfterSeconds: 5 });
+
+    // register your ingestion routes here
+    // ingestScope.register(ingestionRoutes);
+    fastify.register(registerIngestRoutes);
+    fastify.register(registerAccountRoutes);
+    fastify.register(registerRoleRoutes);
   });
 
   addFormatServiceParamsHook(fastify);
