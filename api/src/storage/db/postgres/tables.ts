@@ -8,4 +8,5 @@ export const TABLES = {
   CLIENT_SIGNATURES: 'client_signatures',
   ENDPOINT_CLIENT_USAGE: 'endpoint_client_usage',
   INGEST_BATCHES: 'ingest_batches',
+  APPLICATION_API_KEYS: 'application_api_keys',
 } as const;

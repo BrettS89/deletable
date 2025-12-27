@@ -11,9 +11,12 @@ import { errorHandler } from './middleware/error-handler';
 import { addFormatServiceParamsHook } from './middleware/format-params';
 import inFlightLimiter from './middleware/in-flight-limiter';
 
+import { typeCountsSchema, fieldUsageSchema, fieldUsageArraySchema } from './modules/ingest/ingest.validators';
+
 import { registerIngestRoutes } from './modules/ingest';
 import { registerAccountRoutes } from './modules/accounts';
 import { registerRoleRoutes } from './modules/roles';
+import { registerApplicationRoutes } from './modules/applications';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -71,6 +74,10 @@ export const initApp = async () => {
 
   fastify.decorate('db', { pool: postgres.pool });
 
+  fastify.addSchema(typeCountsSchema);
+  fastify.addSchema(fieldUsageSchema);
+  fastify.addSchema(fieldUsageArraySchema);
+
   await fastify.register(import('@fastify/swagger'))
 
   await fastify.register(import('@fastify/swagger-ui'), {
@@ -80,7 +87,8 @@ export const initApp = async () => {
     routePrefix: '/documentation',
     uiConfig: {
       docExpansion: 'list',
-      deepLinking: false
+      deepLinking: false,
+      defaultModelsExpandDepth: -1,
     },
     staticCSP: true,
     transformSpecificationClone: true
@@ -94,6 +102,7 @@ export const initApp = async () => {
     fastify.register(registerIngestRoutes);
     fastify.register(registerAccountRoutes);
     fastify.register(registerRoleRoutes);
+    fastify.register(registerApplicationRoutes);
   });
 
   addFormatServiceParamsHook(fastify);

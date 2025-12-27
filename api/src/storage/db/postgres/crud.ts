@@ -2,6 +2,10 @@ import { Pool, PoolClient } from 'pg';
 import { BaseQueryObject } from '../../../utils/query/schema';
 import { generateSqlAndParams } from '../../../utils/query';
 
+type GeneratedKeys = 'id' | 'created_at' | 'updated_at';
+
+type InsertData<T> = Omit<T, GeneratedKeys>;
+
 export class PostgresCrud {
   readonly name: string;
   private db: Pool | PoolClient;
@@ -30,7 +34,7 @@ export class PostgresCrud {
     return res.rows as T[];
   }
 
-  async create<T>(data: Record<string, any>): Promise<T> {
+  async create<T>(data: InsertData<T>): Promise<T> {
     const keys: string[] = [];
     const nums: string[] = []
     const values: any[] = [];

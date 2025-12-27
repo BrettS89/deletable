@@ -1,12 +1,42 @@
-import { AnySchema } from 'ajv';
+export const typeCountsSchema = {
+  $id: 'TypeCounts',
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    string: { type: 'integer', minimum: 0 },
+    number: { type: 'integer', minimum: 0 },
+    boolean: { type: 'integer', minimum: 0 },
+    null: { type: 'integer', minimum: 0 },
+    object: { type: 'integer', minimum: 0 },
+    array: { type: 'integer', minimum: 0 },
+  },
+} as const;
 
-export const ingestBatchRequestSchema: AnySchema = {
+export const fieldUsageSchema = {
+  $id: 'FieldUsage',
+  type: 'object',
+  additionalProperties: false,
+  required: ['field_path', 'type_counts', 'observations'],
+  properties: {
+    field_path: { type: 'string' },
+    type_counts: { $ref: 'TypeCounts#' },   // or '#/components/schemas/TypeCounts' depending on your setup
+    observations: { type: 'integer', minimum: 0 },
+  },
+} as const;
+
+export const fieldUsageArraySchema = {
+  $id: 'FieldUsageArray',
+  type: 'array',
+  items: { $ref: 'FieldUsage#' },
+} as const;
+
+export const ingestBatchRequestSchema = {
   $id: 'IngestBatchDto',
   type: 'object',
   additionalProperties: false,
   required: ['batch_id', 'application_id', 'endpoint_usage'],
   properties: {
-    batch_id: { type: 'string' }, // optionally add: format: 'uuid'
+    batch_id: { type: 'string' },
     application_id: { type: 'integer' },
     endpoint_usage: {
       type: 'array',
@@ -23,44 +53,14 @@ export const ingestBatchRequestSchema: AnySchema = {
             type: 'object',
             additionalProperties: false,
             properties: {
-              request_body: { $ref: '#/$defs/fieldUsageArray' },
-              response_body: { $ref: '#/$defs/fieldUsageArray' },
-              query_param: { $ref: '#/$defs/fieldUsageArray' },
-              header: { $ref: '#/$defs/fieldUsageArray' },
+              request_body: { $ref: 'FieldUsageArray#' },
+              response_body: { $ref: 'FieldUsageArray#' },
+              query_param: { $ref: 'FieldUsageArray#' },
+              header: { $ref: 'FieldUsageArray#' },
             },
           },
         },
       },
     },
   },
-
-  $defs: {
-    // Constrained set of keys: string|number|boolean|null|object|array
-    typeCounts: {
-      type: 'object',
-      additionalProperties: false,
-      properties: {
-        string: { type: 'integer', minimum: 0 },
-        number: { type: 'integer', minimum: 0 },
-        boolean: { type: 'integer', minimum: 0 },
-        null: { type: 'integer', minimum: 0 },
-        object: { type: 'integer', minimum: 0 },
-        array: { type: 'integer', minimum: 0 },
-      },
-    },
-    fieldUsage: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['field_path', 'type_counts', 'observations'],
-      properties: {
-        field_path: { type: 'string' },
-        type_counts: { $ref: '#/$defs/typeCounts' },
-        observations: { type: 'integer', minimum: 0 },
-      },
-    },
-    fieldUsageArray: {
-      type: 'array',
-      items: { $ref: '#/$defs/fieldUsage' },
-    },
-  },
-};
+} as const;

@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify';
 
-type Context<TService> = {
+type Context = {
   route: string;
   fastify: FastifyInstance;
 };
 
-export type RegisterEndpoint<TService> = (context: Context<TService>) => void;
+export type RegisterEndpoint = (context: Context) => void;

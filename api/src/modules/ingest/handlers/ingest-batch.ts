@@ -3,7 +3,7 @@ import { IngestBatchDto } from '../types/ingest.dto';
 import { IngestService } from '../ingest.service';
 import { ingestBatchRequestSchema } from '../ingest.validators';
 
-export const ingestBatchEndpoint: RegisterEndpoint<IngestService> = ({ route, fastify }) => {
+export const ingestBatchEndpoint: RegisterEndpoint = ({ route, fastify }) => {
   fastify.route<{ Body: IngestBatchDto }>({
     method: 'POST',
     url: route,
@@ -16,7 +16,9 @@ export const ingestBatchEndpoint: RegisterEndpoint<IngestService> = ({ route, fa
     },
     handler: async (request, reply) => {
       const ingestService = new IngestService(fastify.db.pool);
+
       await ingestService.ingestBatch(request.body);
+      
       reply.status(204).send();
     }
   });

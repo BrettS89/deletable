@@ -109,6 +109,17 @@ exports.up = (pgm) => {
       CONSTRAINT uq_ingest_batches UNIQUE (application_id, batch_id)
     );
 
+    CREATE TABLE IF NOT EXISTS application_api_keys (
+      id BIGSERIAL PRIMARY KEY,
+      application_id BIGINT NOT NULL REFERENCES applications(id),
+      public_key TEXT NOT NULL,
+      secret_hash TEXT NOT NULL,
+      status TEXT NOT NULL,
+      account_id BIGINT NOT NULL REFERENCES accounts(id),
+      created_at TIMESTAMPTZ DEFAULT now(),
+      updated_at TIMESTAMPTZ DEFAULT now()
+    );
+
     CREATE INDEX idx_applications_account_id ON applications (account_id);
 
     CREATE INDEX idx_endpoints_account_id ON endpoints (account_id);
@@ -132,6 +143,7 @@ exports.up = (pgm) => {
  */
 exports.down = (pgm) => {
   pgm.sql(`
+    DROP TABLE application_api_key;
     DROP TABLE ingest_batches;
     DROP TABLE endpoint_client_usage;
     DROP TABLE client_signatures;

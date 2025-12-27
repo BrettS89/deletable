@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "node-pg-migrate",
-    "migrate:up": "ts-node src/scripts/migration/up.ts",
+    "migrate:up": "ts-node scripts/migration/up.ts",
+    "seed:local": "ts-node scripts/seed-local.ts",
     "dev": "ts-node-dev src/index.ts"
   },
   "dependencies": {

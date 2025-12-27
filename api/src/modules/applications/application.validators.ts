@@ -26,3 +26,15 @@ export const applicationResponseSchema: AnySchema = {
   ],
   additionalProperties: false,
 };
+
+export const createApplicationResponseSchema: AnySchema = {
+  type: 'object',
+  properties: {
+    application: applicationResponseSchema,
+    application_api_key: { type: 'string' },
+  },
+  required: [
+    'application',
+    'application_api_key'
+  ],
+};

@@ -1,12 +1,9 @@
 import { config } from 'dotenv';
 config()
-import migrate from 'node-pg-migrate';
-import { validateEnvironmentVariables } from '../../config/environment-variables';
+import { runner } from 'node-pg-migrate';
 
 async function runMigrations() {
-  validateEnvironmentVariables();
-
-  await migrate({
+  await runner({
     databaseUrl: 'postgres://root:root@localhost:5432/churchcomapi',
     dir: 'migrations',
     direction: 'down',
@@ -14,4 +11,5 @@ async function runMigrations() {
     migrationsTable: 'migrations',
   });
 }
+
 runMigrations();
